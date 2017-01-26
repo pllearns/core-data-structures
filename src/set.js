@@ -31,4 +31,8 @@ export default class Set {
       }
     }
   }
+
+  union() {
+    
+  }
 }
