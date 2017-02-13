@@ -1,7 +1,16 @@
-## Advanced Data Structures
+# Learning Contract for Goal: Core Data Structures
 
-### To run tests use `npm test`
-### Please check test for any linting errors. I may add eslint to this project for complete testing
+[Description](#description) | [Basic Data Structures](#basic-data-structures) | [Advanced Data Structures](#advanced-data-structures) | [Context](#context) | [Specifications](#specifications) | [Quality Rubric](#quality-rubric)
+
+## Description
+
+Write tests and implementations for common data structures.
+
+Fork the this repository and use the fork as your project artifact.
+
+Use the list below as a reference for each data structure's interface.
+
+## Advanced Data Structures
 
 ### Hash Table
 
