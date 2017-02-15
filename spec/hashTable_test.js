@@ -4,7 +4,7 @@ import HashTable from '../src/HashTable'
 
 chai.use(chaiChange)
 
-describe.only('HashTable', () => {
+describe('HashTable', () => {
   'use strict'
 
   it('exists', () => {
@@ -12,22 +12,32 @@ describe.only('HashTable', () => {
   })
 
   describe('put()', () => {
-    it('adds a key-value pair to the hash table..', () => {
+    it('adds a key-value pair to the hash table.', () => {
       const hash = new HashTable()
-      expect(() => hash.put('foo'))
-        .to.eql(() => { foo: 0})
-      expect(() => hash.put('bar'))
-        .to.eql({ bar: 'name'})
+      console.log(HashTable);
+      hash.put('name', 'philliplorenzo')
+      hash.put('19.0', 'renzo')
+      expect(hash.contains('19.0')).to.be.true
     })
   })
-
-  describe('get()', () => {
-    it('returns the data associated with key.', () => {
-      const hash = new HashTable()
-      expect(() => hash.get('foo'))
-        .to.eql({ value: 'foo'})
-    })
-  })
+  //
+  // describe('get()', () => {
+  //   it('returns the data associated with key.', () => {
+  //     const hash = new HashTable()
+  //     hash.put('name', 'frankenstein')
+  //     expect(hash.size()).to.equal(1)
+  //     hash.put('19.0', 'stein')
+  //     expect(hash.size()).to.equal(2)
+  //     hash.put('wsqe', 'frank')
+  //     hash.put('tomp', 'more data')
+  //     hash.put('separate', 'hashes')
+  //     hash.put('difdeaaat', 'another one')
+  //     console.log(hash.valueStore)
+  //     expect(hash.get('separate')).to.eql('hashes')
+  //     expect(hash.get('wsqe')).to.eql('frank')
+  //     expect(hash.get('difdeaaat')).to.eql('another one')
+  //   })
+  // })
 
   // describe('contains()', () => {
   //   it('returns true if the hash table contains the key.', () => {
