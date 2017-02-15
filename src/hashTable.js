@@ -20,12 +20,6 @@ export default class HashTable {
     return sum % 3550
   }
 
-  size() {
-    return this._length
-  }
-
-
-
   put(key, value) {
     let newNode = new Node(key, value)
     let hash = this.hashFunction(key)
@@ -34,53 +28,35 @@ export default class HashTable {
       this.valueStore[hash] = newNode
     } else {
       this.chain(hash, newNode)
-      }
-      ++this._length
+    }
+    ++this._length
+  }
+
+  size() {
+    return this._length
   }
 
   get(key) {
     let hash = this.hashFunction(key)
-      if(this.dataStore[hash]) {
-        let currentNode = this.dataStore[hash]
-    if (currentNode.key === key) {
-      return currentNode.data
-    } else {
-      while(currentNode.next) {
-        if(currentNode.key === key) {
-          return currentNode.data
+    if (this.valueStore[hash]) {
+      let currentNode = this.valueStore[hash]
+      if (currentNode.key === key) {
+        return currentNode.value
+      } else {
+        while (currentNode.next) {
+          if (currentNode.key === key) {
+            return currentNode.value
+          } else {
+            currentNode = currentNode.next
+          }
+        }
+        if (currentNode.key === key) {
+          return currentNode.value
         } else {
-          currentNode = currentNode.next
+          return "no value here"
         }
       }
-      if (currentNode.key === key) {
-        return currentNode.data
-      } else {
-        return "sorry your data is not here"
-      }
     }
-  }
-}
-
-  chain(hash, newNode) {
-    newNode.next = this.valueStore[hash]
-    this.valueStore[hash] = newNode
-  }
-
-  save(hash, key, value){
-    elements[hash] = [pairing(key, value)]
-    count++
-  }
-
-  update(hash, key, value) {
-    let i, pair
-    for(i in elements[hash]) {
-      pair = elements[hash][i]
-      if (pair.getKey() === key) {
-        pair.setValue(value)
-        return true
-      }
-    }
-    return false
   }
 
   contains(key){
@@ -99,51 +75,51 @@ export default class HashTable {
       } else {
         return false
       }
-      } else {
-        return false
+    } else {
+      return false
+    }
+  }
+
+  iterate(callback) {
+    let currentNode = this.valueStore
+    for (let i = 0; i < currentNode.length; i++) {
+      if (currentNode[i]) {
+        callback(currentNode[i].key, currentNode[i].value)
+        while (currentNode[i].next) {
+        callback(currentNode[i].next.key, currentNode[i].next.data)
+        currentNode[i] = currentNode[i].next
+      }
+      i++
     }
   }
 }
 
-//   class Node{
-//   constructor() {
-//     this.key = 0,
-//     this.data = 0,
-//     this.next = null
-//   }
-// }
+  remove(key) {
+    let hash = this.hashFunction(key)
+    if (this.valueStore[hash]){
+      let currentNode = this.valueStore[hash]
+      if (currentNode.key === key){
+        this.valueStore[hash] = currentNode.next
+      } else {
+        while (currentNode.next) {
+          if (currentNode.next.key === key) {
+            currentNode.next = currentNode.next.next
+          } else {
+            currentNode = currentNode.next
+          }
+        }
+      }
+    }
+  }
 
-// export default class Hashtable{
-//   constructor(){
-//     this._length,
-//     this.dataStore = []
-//   }
-//
-//   hashFunction(key) {
-//     let sum = 0
-//     for (let i = 0; i < key.length; i++) {
-//       sum += key.charCodeAt(i)
-//     }
-//     return sum % 31
-//   }
+  chain(hash, newNode) {
+    newNode.next = this.valueStore[hash]
+    this.valueStore[hash] = newNode
+  }
 
-  //
-  // contains(value) {
-  //   return this.elements.includes(value)
-  // }
-  //
-  // iterate(key, value) {
-  //   return this.elements.includes(value)
-  // }
-  //
-  // remove(value) {
-  //   return this.elements.includes(value)
-  // }
-  //
-  // size() {
-  //   return this.elements.includes(value)
-  // }
-  //
-  // hash(value) {
-  //   return this.elements.includes(value)
-  // }
+  save(hash, key, value){
+    elements[hash] = [pairing(key, value)]
+    count++
+  }
+
+}
