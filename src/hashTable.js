@@ -1,125 +1,159 @@
 class Node {
-  constructor(key, value) {
-    this.key = key,
-    this.value = value,
-    this.next = null
+  constructor(key,value) {
+    this.key = key
+    this.value = value
+    this.next = null;
+  }
+
+  setNext(node) {
+    this.next = node
+    return this
   }
 }
 
-export default class HashTable {
+
+class LinkedList{
+  constructor(){
+    this.head = null;
+    this.tail = null;
+    this._length = 0;
+  }
+
+  insert(key, value) {
+    let node = new Node(key, value)
+    if(this.head === null) {
+      this.head = node
+    }
+    if(this.tail !== null) {
+      this.tail.next = node
+    }
+    this.tail = node
+    this._length++
+  }
+
+  find(key) {
+    let currentNode = this.head
+    let position = 0
+    while (currentNode !== null && currentNode.key !== key) {
+      currentNode = currentNode.next
+      position++
+    }
+    if (currentNode !== null && currentNode.key === key) {
+      return position
+    }
+    return -1
+  }
+
+  getValueAt(key) {
+    let position = this.find(key)
+    console.log('position?', position)
+    let currentNode = this.head
+    console.log('what position?', position)
+    for (let i = 0; i <= position; i++ ) {
+      console.log('what position now?', position)
+      currentNode = currentNode.next
+    }
+    console.log('what player?', currentNode.value)
+    return currentNode.value
+  }
+}
+
+class Bucket {
   constructor() {
-    this._length = 0
-    this.valueStore = []
+    this._storage = new LinkedList()
   }
-
-  hashFunction(key) {
-    let sum = 0
-    for (let i = 0; i < key.length; i++) {
-      sum += key.charCodeAt(i)
+    add(key, value) {
+      this._storage.insert(key, value)
+      this._storage._length++
+      return this._storage
     }
-    return sum % 3550
-  }
 
-  put(key, value) {
-    let newNode = new Node(key, value)
-    let hash = this.hashFunction(key)
-
-    if(!this.valueStore[hash]) {
-      this.valueStore[hash] = newNode
-    } else {
-      this.chain(hash, newNode)
+    find(key) {
+      return this._storage.find(key)
     }
-    ++this._length
-  }
 
-  size() {
-    return this._length
-  }
-
-  get(key) {
-    let hash = this.hashFunction(key)
-    if (this.valueStore[hash]) {
-      let currentNode = this.valueStore[hash]
-      if (currentNode.key === key) {
-        return currentNode.value
-      } else {
-        while (currentNode.next) {
-          if (currentNode.key === key) {
-            return currentNode.value
-          } else {
-            currentNode = currentNode.next
-          }
-        }
-        if (currentNode.key === key) {
-          return currentNode.value
-        } else {
-          return "no value here"
-        }
-      }
+    getValueAt(position) {
+      return this._storage.getValueAt(position)
     }
-  }
 
-  contains(key){
-    let hash = this.hashFunction(key)
-    let currentNode = this.valueStore[hash]
-    if (this.valueStore[hash]) {
-      while(currentNode.next) {
-        if (currentNode.key === key) {
-          return true
-        } else {
-          currentNode = currentNode.next
-        }
-      }
-      if (currentNode.key === key) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-      return false
+   replace(value, position) {
+      this._storage[position][1] = value
     }
-  }
-
-  iterate(callback) {
-    let currentNode = this.valueStore
-    for (let i = 0; i < currentNode.length; i++) {
-      if (currentNode[i]) {
-        callback(currentNode[i].key, currentNode[i].value)
-        while (currentNode[i].next) {
-        callback(currentNode[i].next.key, currentNode[i].next.data)
-        currentNode[i] = currentNode[i].next
-      }
-      i++
-    }
-  }
 }
 
-  remove(key) {
-    let hash = this.hashFunction(key)
-    if (this.valueStore[hash]){
-      let currentNode = this.valueStore[hash]
-      if (currentNode.key === key){
-        this.valueStore[hash] = currentNode.next
-      } else {
-        while (currentNode.next) {
-          if (currentNode.next.key === key) {
-            currentNode.next = currentNode.next.next
-          } else {
-            currentNode = currentNode.next
-          }
-        }
-      }
+class HashTable {
+  constructor(tableSize) {
+    this._size = tableSize;
+    this._storage = [];
+    for(let i =0; i< tableSize; i++) {
+      this._storage[i] = new Bucket()
     }
+    this._count = 0;
   }
 
-  chain(hash, newNode) {
-    newNode.next = this.valueStore[hash]
-    this.valueStore[hash] = newNode
+  simpleHash(str) {
+    var hash = 0;
+    for (var i=0; i<str.length; i++) {
+      hash += str.charCodeAt(i) * (i+1);
+    }
+    return hash % this._size
   }
 
-  save(hash, key, value){
-    elements[hash] = [pairing(key, value)]
-    count++
+  getBucket(key) {
+    let bucketNumber = this.simpleHash(key, this._size)
+    return this._storage[bucketNumber]
+  }
+
+  find(key) {
+    let bucket = this.getBucket(key)
+    return bucket.find(key)
+  }
+
+  setHash(key, value) {
+    let keyPosition = this.find(key, value)
+    let bucket = this.getBucket(key)
+      if(keyPosition === -1) {
+        bucket.add(key, value)
+        this._count++
+        console.log('do I get a count?', this._count)
+      } else {
+        bucket.replace(value, keyPosition)
+    }
+      return this
+  }
+
+    getHash(key) {
+      let bucket = this.getBucket(key)
+      let position = bucket.find(key)
+      if(position !== -1) {
+        bucket.getValueAt(position)
+      }
+      return undefined
+  }
+
+  remove() {
+    if (this.hasItem(key)) {
+    previous = this.items[key];
+    this.size--;
+    delete this.items[key];
+    return previous;
+    }
+    else {
+        return undefined;
+    }
   }
 
 }
+
+let myHash = new HashTable(3)
+myHash.setHash("Warriors", "Curry")
+myHash.setHash("Spurs", "Leonard")
+myHash.setHash("Celtics", "Thomas")
+console.log(myHash._storage[2])
+console.log('are there warriors here?', myHash.getHash("Warriors"))
+console.log('are there spurs here?', myHash.getHash("Spurs"))
+console.log('are there Celtics here?', myHash.getHash("Celtics"))
+// myHash.remove("Celtics")
+// myHash.remove("Spurs")
+
+// console.log(myHash._storage[1])

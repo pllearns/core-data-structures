@@ -1,6 +1,6 @@
 import chai, { expect } from 'chai'
 import chaiChange from 'chai-change'
-import HashTable from '../src/HashTable'
+import HashTable from '../src/oldHashTable'
 
 chai.use(chaiChange)
 
